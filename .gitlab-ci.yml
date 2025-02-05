@@ -25,11 +25,8 @@ mirror-repository:
       "
 
     # Add GitLab host to known hosts
-    - ssh-keyscan git.prometheus.systems >> ~/.ssh/known_hosts
+    - ssh-keyscan "$GIT_LAB_HOST" >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
-
-    # Force Git to use SSH instead of HTTPS
-    - git config --global url."git@git.prometheus.systems:".insteadOf "https://git.prometheus.systems/"
 
     # Configure Git user
     - git config --global user.name "${GIT_USER_NAME}"
