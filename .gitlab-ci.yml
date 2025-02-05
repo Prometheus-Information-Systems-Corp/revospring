@@ -5,16 +5,18 @@ mirror-repository:
   stage: mirror
   image: alpine:latest
   before_script:
-    - apk add --no-cache openssh-client git
+    - apk add --no-cache openssh-client git expect
+
+    # Ensure SSH directory exists
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
 
-    # Decode the SSH key
+    # Decode and set up SSH private key
     - echo "$GIT_SSH_PRIVATE_KEY_B64" | base64 -d > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
 
-    # Unlock the SSH key using password
-    - apk add --no-cache expect
+    # Start SSH agent and add private key with passphrase
+    - eval $(ssh-agent -s)
     - expect -c "
         spawn ssh-add ~/.ssh/id_rsa
         expect \"Enter passphrase for ~/.ssh/id_rsa:\"
@@ -22,10 +24,14 @@ mirror-repository:
         expect eof
       "
 
-    - ssh-keyscan "$GIT_LAB_HOST" >> ~/.ssh/known_hosts
+    # Add GitLab host to known hosts
+    - ssh-keyscan git.prometheus.systems >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
 
-    # Configure Git
+    # Force Git to use SSH instead of HTTPS
+    - git config --global url."git@git.prometheus.systems:".insteadOf "https://git.prometheus.systems/"
+
+    # Configure Git user
     - git config --global user.name "${GIT_USER_NAME}"
     - git config --global user.email "${GIT_USER_EMAIL}"
   script:
