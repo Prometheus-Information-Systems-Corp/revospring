@@ -21,6 +21,10 @@ mirror-repository:
     - echo "Updating remote origin..."
     - git remote remove origin
     - git remote add origin "$AUTHENTICATED_DESTINATION_REPO"
+
+    # Print the constructed repo URL (masking the PAT for security)
+    - echo "AUTHENTICATED_DESTINATION_REPO (masked): https://${GIT_USER}:*****@${DESTINATION_REPOSITORY}"
+
     - echo "Pushing updates to GitLab..."
     - git push --prune --all
     - git push --prune --tags
