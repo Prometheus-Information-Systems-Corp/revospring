@@ -5,39 +5,22 @@ mirror-repository:
   stage: mirror
   image: alpine:latest
   before_script:
-    - apk add --no-cache openssh-client git expect
+    - apk add --no-cache git
 
-    # Ensure SSH directory exists
-    - mkdir -p ~/.ssh
-    - chmod 700 ~/.ssh
-
-    # Decode and set up SSH private key
-    - echo "$GIT_SSH_PRIVATE_KEY_B64" | base64 -d > ~/.ssh/id_rsa
-    - chmod 600 ~/.ssh/id_rsa
-
-    # Start SSH agent and add private key with passphrase
-    - eval $(ssh-agent -s)
-    - expect -c "
-        spawn ssh-add ~/.ssh/id_rsa
-        expect \"Enter passphrase for ~/.ssh/id_rsa:\"
-        send \"$GIT_SSH_KEY_PASSWORD\r\"
-        expect eof
-      "
-
-    # Add GitLab host to known hosts
-    - ssh-keyscan "$GIT_LAB_HOST" >> ~/.ssh/known_hosts
-    - chmod 644 ~/.ssh/known_hosts
-
-    # Configure Git user
+    # Configure Git with HTTPS credentials
     - git config --global user.name "${GIT_USER_NAME}"
     - git config --global user.email "${GIT_USER_EMAIL}"
+
+    # Construct authenticated destination repository URL at runtime
+    - export AUTHENTICATED_DESTINATION_REPO="https://${GIT_USER}:${GIT_PAT}@${DESTINATION_REPOSITORY}"
+    
   script:
     - echo "Cloning repository from source..."
     - git clone --mirror "$SOURCE_REPOSITORY" repo_mirror
     - cd repo_mirror
     - echo "Updating remote origin..."
     - git remote remove origin
-    - git remote add origin "$DESTINATION_REPOSITORY"
+    - git remote add origin "$AUTHENTICATED_DESTINATION_REPO"
     - echo "Pushing updates to GitLab..."
     - git push --prune --all
     - git push --prune --tags
