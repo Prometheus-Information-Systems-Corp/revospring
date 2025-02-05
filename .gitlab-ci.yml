@@ -8,10 +8,24 @@ mirror-repository:
     - apk add --no-cache openssh-client git
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
-    - eval $(ssh-agent -s)
-    - echo "$GIT_SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+
+    # Decode the SSH key
+    - echo "$GIT_SSH_PRIVATE_KEY_B64" | base64 -d > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+
+    # Unlock the SSH key using password
+    - apk add --no-cache expect
+    - expect -c "
+        spawn ssh-add ~/.ssh/id_rsa
+        expect \"Enter passphrase for ~/.ssh/id_rsa:\"
+        send \"$GIT_SSH_KEY_PASSWORD\r\"
+        expect eof
+      "
+
     - ssh-keyscan "$GIT_LAB_HOST" >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
+
+    # Configure Git
     - git config --global user.name "${GIT_USER_NAME}"
     - git config --global user.email "${GIT_USER_EMAIL}"
   script:
