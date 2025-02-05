@@ -28,5 +28,6 @@ mirror-repository:
     - echo "Pushing updates to GitLab..."
     - git push --all --force
     - git push --tags --force
+    
   only:
-    - branches
+    - schedules
