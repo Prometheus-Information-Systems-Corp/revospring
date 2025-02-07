@@ -1,0 +1,14 @@
+#!/bin/bash
+
+PORT=${1:-3000}
+PID=$(lsof -ti :$PORT)
+
+if [ -z "$PID" ]; then
+  echo "Nothing to kill on port $PORT"
+else
+  PROCESS_NAME=$(ps -p $PID -o comm=)
+  kill -9 $PID
+  echo "Killed process $PROCESS_NAME running on port $PORT"
+fi
+
+
