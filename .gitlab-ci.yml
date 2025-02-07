@@ -56,11 +56,11 @@ stages:
     # Print files on the VPS before deploying
     - echo "📂 Files in VPS before deployment:"
     - ssh "$VPS_USER@$HOST_URL" "ls -lah $VPS_INSTALL_PATH"
-    
+
     # Run rsync in dry-run mode to preview changes
     - echo "Running rsync dry-run (preview changes)..."
     - echo "$VPS_USER@$HOST_URL:$VPS_INSTALL_PATH/"
-    - rsync -avzn --exclude='.git/' --exclude='log/' --exclude='tmp/' ./ "$VPS_USER@$HOST_URL:$VPS_INSTALL_PATH/"
+    - rsync -azcn --out-format='%n' --exclude='.git/' --exclude='log/' --exclude='tmp/' ./ "$VPS_USER@$HOST_URL:$VPS_INSTALL_PATH/"
 
   environment:
     name: $CI_COMMIT_BRANCH
