@@ -243,6 +243,10 @@ GEM
       rainbow
       rubocop (>= 1.0)
       sysexits (~> 1.1)
+    hotwire-livereload (2.0.0)
+      actioncable (>= 7.0.0)
+      listen (>= 3.0.0)
+      railties (>= 7.0.0)
     http-2 (0.12.0)
       base64
     httparty (0.22.0)
@@ -627,6 +631,7 @@ DEPENDENCIES
   haml (~> 6.3)
   haml_lint
   hcaptcha!
+  hotwire-livereload
   httparty
   i18n-js (= 4.0)
   jsbundling-rails (~> 1.3)
