@@ -1,0 +1,81 @@
+### Ruby/Rails ###
+.bundle
+.byebug_history
+
+/config/database.yml
+.env
+.env.development
+
+/coverage
+
+/log/
+*.log
+/tmp/
+
+# Precompiled assets/packs
+/app/assets/builds/
+/public/assets
+
+# RSpec example status persistence
+/spec/examples.txt
+
+# Node.js & Yarn
+/node_modules/
+/yarn-error.log
+yarn-debug.log*
+.yarn-integrity
+
+### Retrospring-specific ###
+# Site configuration
+/config/justask.yml
+
+# Locales generated with `bin/rails locale:generate`
+/config/locales/*.en-xx.yml
+
+# Local storage
+/public/export/
+/public/system/
+/public/users/
+
+# Don't push generated JS translations
+/app/javascript/retrospring/i18n.json
+
+### Operating systems / desktops ###
+# KDE
+.directory
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+desktop.ini
+
+### Editors ###
+# Emacs
+\#*\#
+.projectile
+
+# Kate
+.*.kate-swp
+
+# JetBrains IDEs (e.g., RubyMine)
+/.idea/
+
+# Vim
+*.swp
+*~
+
+# VS Code
+.vscode/
+
+### Secrets & Sensitive Files ###
+/config/master.key
+/config/secrets.yml
+/config/credentials.yml.enc
+development.env
+
+### Prometheus ###
+Procfile
+Procfile.dev
+vendor/
