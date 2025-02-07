@@ -1,6 +1,77 @@
 stages:
   - mirror
-  - test-ssh
+  - test-ssh 
+  - deploy
+
+.deploy_template:
+  stage: deploy
+  before_script:
+    - apk update && apk add --no-cache openssh sshpass
+    - mkdir -p ~/.ssh
+
+    # Set environment-specific variables based on branch
+    - if [ "$CI_COMMIT_BRANCH" = "dev-revospring" ]; then
+        export HOST_PRIVATE_KEY_B64="$DEV_HOST_PRIVATE_KEY_B64";
+        export HOST_SSH_PASSPHRASE="$DEV_HOST_SSH_PASSPHRASE";
+        export VPS_USER="$DEV_VPS_USER";
+        export HOST_URL="$DEV_HOST_URL";
+        export VPS_INSTALL_PATH="$DEV_VPS_INSTALL_PATH";
+      elif [ "$CI_COMMIT_BRANCH" = "revospring" ]; then
+        export HOST_PRIVATE_KEY_B64="$PROD_HOST_PRIVATE_KEY_B64";
+        export HOST_SSH_PASSPHRASE="$PROD_HOST_SSH_PASSPHRASE";
+        export VPS_USER="$PROD_VPS_USER";
+        export HOST_URL="$PROD_HOST_URL";
+        export VPS_INSTALL_PATH="$PROD_VPS_INSTALL_PATH";
+      else
+        echo "Unknown environment. Skipping deployment.";
+        exit 1;
+      fi
+
+    # Print debugging info
+    - echo "User:$VPS_USER"
+    - echo "Host:$HOST_URL"
+    - echo "Install Path:$VPS_INSTALL_PATH"
+
+    # Decode and configure SSH key
+    - echo "$HOST_PRIVATE_KEY_B64" | base64 -d > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+
+    # Add the VPS to known_hosts to prevent prompts
+    - ssh-keyscan -H "$HOST_URL" >> ~/.ssh/known_hosts
+
+    # Start SSH agent and add the private key
+    - eval $(ssh-agent -s)
+    - echo "$HOST_SSH_PASSPHRASE" | ssh-add ~/.ssh/id_rsa
+
+    # Test SSH connection
+    - echo "Testing SSH connection..."
+    - ssh "$VPS_USER@$HOST_URL" "echo 'SSH connection successful'"
+
+  script:
+    # Run rsync in dry-run mode to preview changes
+    - echo "Running rsync dry-run (preview changes)..."
+    - rsync -avzn --exclude='.git/' --exclude='log/' --exclude='tmp/' ./ "$VPS_USER@$HOST_URL:$VPS_INSTALL_PATH/"
+
+  environment:
+    name: $CI_COMMIT_BRANCH
+
+deploy_dev:
+  extends: .deploy_template
+  only:
+    - dev-revospring
+
+deploy_prod:
+  extends: .deploy_template
+  only:
+    - revospring
+
+
+
+
+
+
+
+
 
 test_ssh:
   stage: test-ssh
@@ -40,6 +111,8 @@ test_ssh:
     - echo "$VPS_USER@$HOST_URL"
     - ssh -o StrictHostKeyChecking=no "$VPS_USER@$HOST_URL" "echo 'SSH connection successful'"
 
+  only: 
+    - neverrunthis 
 
 
 mirror-repository:
