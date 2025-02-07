@@ -1,0 +1,33 @@
+stages:
+  - mirror
+
+mirror-repository:
+  stage: mirror
+  image: alpine:latest
+  before_script:
+    - apk add --no-cache git
+
+    # Configure Git with HTTPS credentials
+    - git config --global user.name "${GIT_USER_NAME}"
+    - git config --global user.email "${GIT_USER_EMAIL}"
+
+    # Construct authenticated destination repository URL at runtime
+    - export AUTHENTICATED_DESTINATION_REPO="https://${GIT_USER}:${GIT_PAT}@${DESTINATION_REPOSITORY}"
+    
+  script:
+    - echo "Cloning repository from source..."
+    - git clone --mirror "$SOURCE_REPOSITORY" repo_mirror
+    - cd repo_mirror
+    - echo "Updating remote origin..."
+    - git remote remove origin
+    - git remote add origin "$AUTHENTICATED_DESTINATION_REPO"
+
+    # Print the constructed repo URL (masking the PAT for security)
+    - echo "AUTHENTICATED_DESTINATION_REPO (masked):https://${GIT_USER}:*****@${DESTINATION_REPOSITORY}"
+
+    - echo "Pushing updates to GitLab..."
+    - git push --all --force
+    - git push --tags --force
+    
+  only:
+    - schedules
