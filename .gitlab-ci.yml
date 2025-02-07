@@ -4,9 +4,10 @@ stages:
   - deploy
 
 .deploy_template:
+  image: alpine:latest 
   stage: deploy
   before_script:
-    - apk update && apk add --no-cache openssh sshpass
+    - apk update && apk add --no-cache openssh sshpass rsync
     - mkdir -p ~/.ssh
 
     # Set environment-specific variables based on branch
@@ -54,6 +55,7 @@ stages:
 
   environment:
     name: $CI_COMMIT_BRANCH
+
 
 deploy_dev:
   extends: .deploy_template
