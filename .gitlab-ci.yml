@@ -53,7 +53,7 @@ stages:
     - scp .rsync-ignore "$VPS_USER@$HOST_URL:$VPS_INSTALL_PATH/.rsync-ignore"
 
     # Run rsync to preview differences (dry-run mode)
-    - ssh "$VPS_USER@$HOST_URL" "cd VPS_INSTALL_PATH && rsync -azcn --out-format='%n' --exclude-from='$VPS_INSTALL_PATH/.rsync-ignore' ./ '$VPS_INSTALL_PATH/'"
+    - ssh "$VPS_USER@$HOST_URL" "cd $VPS_INSTALL_PATH && rsync -azcn --out-format='%n' --exclude-from='$VPS_INSTALL_PATH/.rsync-ignore' ./ '$VPS_INSTALL_PATH/'"
 
 
 
