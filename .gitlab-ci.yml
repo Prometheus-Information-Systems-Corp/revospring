@@ -4,13 +4,13 @@ stages:
   - deploy
 
 .deploy_template:
-  image: alpine:latest 
+  image: alpine:latest
   stage: deploy
   before_script:
-    - apk update && apk add --no-cache openssh sshpass rsync
+    - apk update && apk add --no-cache openssh git sshpass
     - mkdir -p ~/.ssh
 
-    # Set environment-specific variables based on branch
+    # Set environment variables based on branch
     - if [ "$CI_COMMIT_BRANCH" = "dev-revospring" ]; then
         export HOST_PRIVATE_KEY_B64="$DEV_HOST_PRIVATE_KEY_B64";
         export HOST_SSH_PASSPHRASE="$DEV_HOST_SSH_PASSPHRASE";
@@ -33,14 +33,14 @@ stages:
     - echo "Host:$HOST_URL"
     - echo "Install Path:$VPS_INSTALL_PATH"
 
-    # Decode and configure SSH key
+    # Decode SSH key
     - echo "$HOST_PRIVATE_KEY_B64" | base64 -d > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
 
-    # Add the VPS to known_hosts to prevent prompts
+    # Add VPS to known_hosts
     - ssh-keyscan -H "$HOST_URL" >> ~/.ssh/known_hosts
 
-    # Start SSH agent and add the private key
+    # Start SSH agent and add key
     - eval $(ssh-agent -s)
     - echo "$HOST_SSH_PASSPHRASE" | ssh-add ~/.ssh/id_rsa
 
@@ -49,20 +49,23 @@ stages:
     - ssh "$VPS_USER@$HOST_URL" "echo 'SSH connection successful'"
 
   script:
-    # Print files in GitLab Runner before deploying
-    - echo "📂 Files in GitLab Runner before deployment:"
-    - ls -lah
-
-    # Print files on the VPS before deploying
-    - echo "📂 Files in VPS before deployment:"
-    - ssh "$VPS_USER@$HOST_URL" "ls -lah $VPS_INSTALL_PATH"
-
-    # Run rsync in dry-run mode to preview changes
-    - echo "Running rsync dry-run (preview changes)..."
-    - echo "$VPS_USER@$HOST_URL:$VPS_INSTALL_PATH/"
-    - cat .gitignore | grep -v '^#' | grep -v '^$' > .rsync-exclude
-    - rsync -azcn --out-format='%n' --exclude-from='.rsync-exclude' --exclude='.git/' ./ "$VPS_USER@$HOST_URL:$VPS_INSTALL_PATH/"
-
+    # Ensure correct repo is set up on VPS
+    - echo "Updating repository on VPS..."
+    # Fetch latest changes but don't apply them yet
+    - ssh "$VPS_USER@$HOST_URL" << EOF
+        cd "$VPS_INSTALL_PATH"
+        if [ ! -d ".git" ]; then
+          echo "Git repo not found, cloning..."
+          git clone git@your-gitlab.com:your-repo.git "$VPS_INSTALL_PATH"
+        fi
+        
+        cd "$VPS_INSTALL_PATH"
+      
+        git fetch origin
+            
+        echo "🔍 Showing differences between local and latest remote version:"
+        git diff --name-status HEAD origin/"$CI_COMMIT_BRANCH"
+      EOF
 
   environment:
     name: $CI_COMMIT_BRANCH
