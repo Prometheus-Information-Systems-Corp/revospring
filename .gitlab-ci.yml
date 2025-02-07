@@ -49,18 +49,18 @@ stages:
     - ssh "$VPS_USER@$HOST_URL" "echo 'SSH connection successful'"
 
   script:
-    # Ensure correct repo is set up on VPS
-    - echo "Updating repository on VPS..."
-    # Fetch latest changes but don't apply them yet
     # Ensure the repository exists
-    - ssh "$VPS_USER@$HOST_URL" "cd '$VPS_INSTALL_PATH' || mkdir -p '$VPS_INSTALL_PATH'"
-    - ssh "$VPS_USER@$HOST_URL" "if [ ! -d '$VPS_INSTALL_PATH/.git' ]; then echo 'Git repo not found, cloning...'; git clone $CI_REPOSITORY_URL '$VPS_INSTALL_PATH'; fi"
+    - ssh -t "$VPS_USER@$HOST_URL" "cd '$VPS_INSTALL_PATH' || mkdir -p '$VPS_INSTALL_PATH'"
+
+    # Clone repo if missing
+    - ssh -t "$VPS_USER@$HOST_URL" "if [ ! -d '$VPS_INSTALL_PATH/.git' ]; then echo 'Git repo not found, cloning...'; git clone $CI_REPOSITORY_URL '$VPS_INSTALL_PATH'; fi"
 
     # Fetch the latest changes
-    - ssh "$VPS_USER@$HOST_URL" "cd '$VPS_INSTALL_PATH' && git fetch origin"
+    - ssh -t "$VPS_USER@$HOST_URL" "cd '$VPS_INSTALL_PATH' && set -x && git fetch origin 2>&1"
 
     # Show differences without applying them
-    - ssh "$VPS_USER@$HOST_URL" "cd '$VPS_INSTALL_PATH' && echo '🔍 Showing differences between local and latest remote version:' && git diff --name-status HEAD origin/'$CI_COMMIT_BRANCH'"
+    - ssh -t "$VPS_USER@$HOST_URL" "cd '$VPS_INSTALL_PATH' && set -x && echo '🔍 Showing differences between local and latest remote version:' && git diff --name-status HEAD origin/'$CI_COMMIT_BRANCH' 2>&1"
+
 
   environment:
     name: $CI_COMMIT_BRANCH
