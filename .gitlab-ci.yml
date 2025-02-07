@@ -49,12 +49,9 @@ stages:
     - ssh "$VPS_USER@$HOST_URL" "echo 'SSH connection successful'"
 
   script:
-    # Copy .rsync-ignore to the VPS
-    - scp .rsync-ignore "$VPS_USER@$HOST_URL:$VPS_INSTALL_PATH/.rsync-ignore"
-
-    # Run rsync to preview differences (dry-run mode)
-    - ssh "$VPS_USER@$HOST_URL" "cd $VPS_INSTALL_PATH && rsync -azcn --out-format='%n' --exclude-from='$VPS_INSTALL_PATH/.rsync-ignore' ./ '$VPS_INSTALL_PATH/'"
-
+  
+    - ssh "$VPS_USER@$HOST_URL:$VPS_INSTALL_PATH" "git remote remove origin && git remote add origin 'https://${GIT_USER}:${GIT_PAT}@${DESTINATION_REPOSITORY}'"
+    - ssh "$VPS_USER@$HOST_URL:$VPS_INSTALL_PATH" "git diff $CI_COMMIT_BRANCH origin/$CI_COMMIT_BRANCH"
 
 
   environment:
