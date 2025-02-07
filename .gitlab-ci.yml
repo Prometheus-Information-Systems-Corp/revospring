@@ -37,7 +37,8 @@ test_ssh:
 
   script:
     - echo "Testing SSH connection..."
-    - ssh "$VPS_USER@$HOST_URL" "echo 'SSH connection successful'"
+    - echo "$VPS_USER@$HOST_URL"
+    - ssh -o StrictHostKeyChecking=no "$VPS_USER@$HOST_URL" "echo 'SSH connection successful'"
 
 
 
