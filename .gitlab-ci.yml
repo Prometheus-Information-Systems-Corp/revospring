@@ -50,8 +50,8 @@ stages:
 
   script:
   
-    - ssh "$VPS_USER@$HOST_URL:$VPS_INSTALL_PATH" "git remote remove origin && git remote add origin 'https://${GIT_USER}:${GIT_PAT}@${DESTINATION_REPOSITORY}'"
-    - ssh "$VPS_USER@$HOST_URL:$VPS_INSTALL_PATH" "git diff $CI_COMMIT_BRANCH origin/$CI_COMMIT_BRANCH"
+    - ssh "$VPS_USER@$HOST_URL" "cd $VPS_INSTALL_PATH && git remote remove origin && git remote add origin 'https://${GIT_USER}:${GIT_PAT}@${DESTINATION_REPOSITORY}'"
+    - ssh "$VPS_USER@$HOST_URL" "cd $VPS_INSTALL_PATH && git diff $CI_COMMIT_BRANCH origin/$CI_COMMIT_BRANCH"
 
 
   environment:
