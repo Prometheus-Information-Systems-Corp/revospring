@@ -49,7 +49,12 @@ stages:
     - ssh "$VPS_USER@$HOST_URL" "echo 'SSH connection successful'"
 
   script:
-    - ssh "$VPS_USER@$HOST_URL" "rsync -azcn --out-format='%n' --exclude-from='.rsync-ignore' ./ '$VPS_INSTALL_PATH/'"
+    # Copy .rsync-ignore to the VPS
+    - scp .rsync-ignore "$VPS_USER@$HOST_URL:$VPS_INSTALL_PATH/.rsync-ignore"
+
+    # Run rsync to preview differences (dry-run mode)
+    - ssh "$VPS_USER@$HOST_URL" "rsync -azcn --out-format='%n' --exclude-from='$VPS_INSTALL_PATH/.rsync-ignore' ./ '$VPS_INSTALL_PATH/'"
+
 
 
   environment:
