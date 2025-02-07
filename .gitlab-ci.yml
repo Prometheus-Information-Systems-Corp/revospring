@@ -52,11 +52,11 @@ stages:
     # Ensure correct repo is set up on VPS
     - echo "Updating repository on VPS..."
     # Fetch latest changes but don't apply them yet
-    - ssh "$VPS_USER@$HOST_URL" << EOF
+    - ssh -v "$VPS_USER@$HOST_URL" << EOF
         cd "$VPS_INSTALL_PATH"
         if [ ! -d ".git" ]; then
-          echo "Git repo not found, cloning..."
-          git clone git@your-gitlab.com:your-repo.git "$VPS_INSTALL_PATH"
+          echo "Git repo not found, cloning...";
+          git clone git@your-gitlab.com:your-repo.git "$VPS_INSTALL_PATH";
         fi
         
         cd "$VPS_INSTALL_PATH"
