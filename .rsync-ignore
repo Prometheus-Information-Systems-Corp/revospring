@@ -79,3 +79,6 @@ development.env
 Procfile
 Procfile.dev
 vendor/
+
+.rbenv/
+.cache/
