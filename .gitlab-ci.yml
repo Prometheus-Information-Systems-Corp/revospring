@@ -56,9 +56,11 @@ stages:
     # - ssh "$VPS_USER@$HOST_URL" "if [ ! -d '$VPS_INSTALL_PATH/.git' ]; then echo 'Git repo not found, cloning...'; git clone $CI_REPOSITORY_URL '$VPS_INSTALL_PATH'; fi"
 
     # Fetch latest changes from origin
+    - echo 'ssh "$VPS_USER@$HOST_URL" "cd '$VPS_INSTALL_PATH' && set -x && git fetch origin 2>&1"'
     - ssh "$VPS_USER@$HOST_URL" "cd '$VPS_INSTALL_PATH' && set -x && git fetch origin 2>&1"
 
     # Show differences between local and remote branches
+    - echo 'ssh "$VPS_USER@$HOST_URL" "cd '$VPS_INSTALL_PATH' && set -x && echo '🔍 Showing differences...' && git diff --name-status HEAD origin/$CI_COMMIT_BRANCH 2>&1"'
     - ssh "$VPS_USER@$HOST_URL" "cd '$VPS_INSTALL_PATH' && set -x && echo '🔍 Showing differences...' && git diff --name-status HEAD origin/$CI_COMMIT_BRANCH 2>&1"
 
 
