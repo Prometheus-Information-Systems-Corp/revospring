@@ -52,6 +52,7 @@ stages:
   
     # deploy  
     - ssh "$VPS_USER@$HOST_URL" "cd $VPS_INSTALL_PATH && git remote remove origin && git remote add origin 'https://${GIT_USER}:${GIT_PAT}@${DESTINATION_REPOSITORY}'"
+    - ssh "$VPS_USER@$HOST_URL" "cd $VPS_INSTALL_PATH && git fetch origin"
     - ssh "$VPS_USER@$HOST_URL" "cd $VPS_INSTALL_PATH && git diff $CI_COMMIT_BRANCH origin/$CI_COMMIT_BRANCH"
     - ssh "$VPS_USER@$HOST_URL" "cd $VPS_INSTALL_PATH && git pull origin $CI_COMMIT_BRANCH --force"
     - ssh "$VPS_USER@$HOST_URL" "cd $VPS_INSTALL_PATH && ./reload_foreman"
