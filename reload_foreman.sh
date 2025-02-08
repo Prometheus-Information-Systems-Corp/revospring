@@ -1,6 +1,4 @@
 #!/bin/bash
-source ~/.bashrc  # Load user environment variables, including PATH
-source ~/.profile # Ensure full environment is available
 
 # Stop execution if any command fails
 set -e
