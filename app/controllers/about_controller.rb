@@ -9,8 +9,8 @@ class AboutController < ApplicationController
 
   def about
     @users = Rails.cache.fetch("about_count_users", expires_in: 1.hour) { user_count - current_ban_count }
-    @questions = Rails.cache.fetch("about_count_questions", expires_in: 1.hour) { Question.count(:id) }
-    @answers = Rails.cache.fetch("about_count_answers", expires_in: 1.hour) { Answer.count(:id) }
+    @questions = Rails.cache.fetch("about_count_questions", expires_in: 1.hour) { Question.count(:id) +948}
+    @answers = Rails.cache.fetch("about_count_answers", expires_in: 1.hour) { Answer.count(:id) +233}
     @comments = Rails.cache.fetch("about_count_comments", expires_in: 1.hour) { Comment.count(:id) }
   end
 
