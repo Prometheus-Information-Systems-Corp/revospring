@@ -7,7 +7,7 @@ stages:
   image: alpine:latest
   stage: deploy
   before_script:
-    - apk update && apk add --no-cache openssh git sshpass
+    - apk update && apk add --no-cache openssh git sshpass curl
     - mkdir -p ~/.ssh
 
     # Set environment variables based on branch
@@ -61,14 +61,19 @@ stages:
     - ssh "$VPS_USER@$HOST_URL" "cd $VPS_INSTALL_PATH && git reset --hard origin/$CI_COMMIT_BRANCH"
 
     - ssh "$VPS_USER@$HOST_URL" "cd $VPS_INSTALL_PATH && ./reload_foreman.sh"
+    - ssh "$VPS_USER@$HOST_URL" "sudo chmod +x ~/retrospring/bin/rails"
     - ssh "$VPS_USER@$HOST_URL" "systemctl restart $VPS_USER"
 
     # check inside vps
-    - sleep 30
+    - ssh "$VPS_USER@$HOST_URL" "systemctl status $VPS_USER"
+    - sleep 15
+    - ssh "$VPS_USER@$HOST_URL" "systemctl status $VPS_USER"
+    - sleep 15
     - ssh "$VPS_USER@$HOST_URL" "systemctl status $VPS_USER"
 
     # check from the outside
     - sleep 100
+    - ssh "$VPS_USER@$HOST_URL" "systemctl status $VPS_USER"
     - HTTP_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" $HOST_URL)
     - echo "Response Code:$HTTP_RESPONSE"
     - if [ "$HTTP_RESPONSE" -ge 200 ] && [ "$HTTP_RESPONSE" -lt 400 ]; then echo "✅ Website is UP!"; exit 0; else echo "❌ Website is DOWN!"; exit 1; fi
