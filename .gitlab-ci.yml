@@ -65,7 +65,7 @@ stages:
     - ssh "$VPS_USER@$HOST_URL" "systemctl restart $VPS_USER"
 
     # check inside vps
-    - ssh "$VPS_USER@$HOST_URL" "systemctl status $VPS_USER"
+    - echo "Restarting service..."
     - sleep 15
     - ssh "$VPS_USER@$HOST_URL" "systemctl status $VPS_USER"
     - sleep 15
@@ -76,7 +76,7 @@ stages:
     - ssh "$VPS_USER@$HOST_URL" "systemctl status $VPS_USER"
     - HTTP_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" $HOST_URL)
     - echo "Response Code:$HTTP_RESPONSE"
-    - if [ "$HTTP_RESPONSE" -ge 200 ] && [ "$HTTP_RESPONSE" -lt 400 ]; then echo "✅ Website is UP!"; exit 0; else echo "❌ Website is DOWN!"; exit 1; fi
+    - if [ "$HTTP_RESPONSE" -ge 200 ] && [ "$HTTP_RESPONSE" -lt 400 ]; then echo "✅ $HOST_URL is UP!"; exit 0; else echo "❌ $HOST_URL is DOWN!"; exit 1; fi
 
     
 
