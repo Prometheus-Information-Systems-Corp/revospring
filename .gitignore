@@ -86,5 +86,4 @@ config/secrets.yml
 config/master.key
 config/credentials.yml.enc
 development.env
-
-
+bin/rails

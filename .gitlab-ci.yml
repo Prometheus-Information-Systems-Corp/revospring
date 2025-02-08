@@ -50,9 +50,24 @@ stages:
 
   script:
   
+    # deploy  
     - ssh "$VPS_USER@$HOST_URL" "cd $VPS_INSTALL_PATH && git remote remove origin && git remote add origin 'https://${GIT_USER}:${GIT_PAT}@${DESTINATION_REPOSITORY}'"
     - ssh "$VPS_USER@$HOST_URL" "cd $VPS_INSTALL_PATH && git diff $CI_COMMIT_BRANCH origin/$CI_COMMIT_BRANCH"
+    - ssh "$VPS_USER@$HOST_URL" "cd $VPS_INSTALL_PATH && git pull origin $CI_COMMIT_BRANCH --force"
+    - ssh "$VPS_USER@$HOST_URL" "cd $VPS_INSTALL_PATH && ./reload_foreman"
+    - ssh "$VPS_USER@$HOST_URL" "systemctl restart $VPS_USER"
 
+    # check inside vps
+    - sleep 30
+    - ssh "$VPS_USER@$HOST_URL" "systemctl status $VPS_USER"
+
+    # check from the outside
+    - sleep 100
+    - HTTP_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" $HOST_URL)
+    - echo "Response Code:$HTTP_RESPONSE"
+    - if [ "$HTTP_RESPONSE" -ge 200 ] && [ "$HTTP_RESPONSE" -lt 400 ]; then echo "✅ Website is UP!"; exit 0; else echo "❌ Website is DOWN!"; exit 1; fi
+
+    
 
   environment:
     name: $CI_COMMIT_BRANCH
