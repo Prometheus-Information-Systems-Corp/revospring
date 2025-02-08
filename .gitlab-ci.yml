@@ -60,7 +60,7 @@ stages:
     # Discard all local changes and match remote branch
     - ssh "$VPS_USER@$HOST_URL" "cd $VPS_INSTALL_PATH && git reset --hard origin/$CI_COMMIT_BRANCH"
 
-    - ssh "$VPS_USER@$HOST_URL" "cd $VPS_INSTALL_PATH && ./reload_foreman"
+    - ssh "$VPS_USER@$HOST_URL" "cd $VPS_INSTALL_PATH && ./reload_foreman.sh"
     - ssh "$VPS_USER@$HOST_URL" "systemctl restart $VPS_USER"
 
     # check inside vps
