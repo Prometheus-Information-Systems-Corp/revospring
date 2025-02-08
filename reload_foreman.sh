@@ -3,9 +3,6 @@
 # Stop execution if any command fails
 set -e
 
-echo "🚀 Installing gems..."
-~/.rbenv/shims/bundle install
-
 echo "🚀 Exporting translations..."
 RAILS_ENV=development ~/.rbenv/shims/bundle exec i18n export
 
