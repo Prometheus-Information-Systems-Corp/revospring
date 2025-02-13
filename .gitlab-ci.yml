@@ -18,6 +18,7 @@ stages:
         export HOST_URL="$DEV_HOST_URL";
         export VPS_INSTALL_PATH="$DEV_VPS_INSTALL_PATH";
         export BUNDLE_COMMAND="~/.rbenv/shims/bundle install";
+        export ENVIRONMENT="development";
       elif [ "$CI_COMMIT_BRANCH" = "revospring" ]; then
         export HOST_PRIVATE_KEY_B64="$PROD_HOST_PRIVATE_KEY_B64";
         export HOST_SSH_PASSPHRASE="$PROD_HOST_SSH_PASSPHRASE";
@@ -25,6 +26,7 @@ stages:
         export HOST_URL="$PROD_HOST_URL";
         export VPS_INSTALL_PATH="$PROD_VPS_INSTALL_PATH";
         export BUNDLE_COMMAND="~/.rbenv/shims/bundle install --deployment --without development test mysql";
+        export ENVIRONMENT="production";
       else
         echo "Unknown environment. Skipping deployment.";
         exit 1;
@@ -66,7 +68,7 @@ stages:
     - echo "🚀 Installing gems..."
     - ssh "$VPS_USER@$HOST_URL" "cd $VPS_INSTALL_PATH && $BUNDLE_COMMAND"
 
-    - ssh "$VPS_USER@$HOST_URL" "cd $VPS_INSTALL_PATH && ./reload_foreman.sh"
+    - ssh "$VPS_USER@$HOST_URL" "cd $VPS_INSTALL_PATH && RAILS_ENV=$ENVIRONMENT ./reload_foreman.sh"
     - ssh "$VPS_USER@$HOST_URL" "chmod +x ~/retrospring/bin/rails"
     - ssh "$VPS_USER@$HOST_URL" "systemctl restart $VPS_USER"
 
