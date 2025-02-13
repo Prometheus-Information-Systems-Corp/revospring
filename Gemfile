@@ -74,7 +74,6 @@ gem "jwt", "~> 2.10"
 
 group :development do
   gem "binding_of_caller"
-  gem "hotwire-livereload"
 end
 
 gem "puma"
