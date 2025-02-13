@@ -6,6 +6,8 @@ stages:
 .deploy_template:
   image: alpine:latest
   stage: deploy
+  except:
+    - schedules
   before_script:
     - apk update && apk add --no-cache openssh git sshpass curl
     - mkdir -p ~/.ssh
