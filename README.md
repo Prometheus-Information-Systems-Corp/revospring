@@ -1,3 +1,9 @@
+## About Revospring
+
+Revospring is a fork of Retrospring. When it was announced that Retrospring would be shutting down permanently on March 1st, 2025, Prometheus Information Systems Corp. volunteered to fork the project and open it up to the public as a way to maintain the project and the community. We have lightly rebranded it as "Revospring" in our fork to avoid any confusion with the original platform, project, or Retrospring team. However, we aim to maintain the original spirit of Retrospring by protecting user privacy and keeping the service free from ads and free for users.
+
+To learn more about Prometheus and our mission to help make the internet a freer place, visit us at: [prometheus.systems](https://prometheus.systems/)
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./.github/assets/logo-white.png">
   <source media="(prefers-color-scheme: light)" srcset="./.github/assets/logo.png">
@@ -7,8 +13,8 @@
 ![Retrospring](https://github.com/Retrospring/retrospring/workflows/Retrospring/badge.svg)
 
 Retrospring is a **free, open-source social network** following the Q/A (question and answer) principle of sites like
-Formspring, ask.fm or CuriousCat.  Users can create accounts on Retrospring to receive questions from other users of the site
-and/or anonymous people on the Internet.  They can also follow each other on Retrospring to see new answers of their friends in
+Formspring, ask.fm or CuriousCat. Users can create accounts on Retrospring to receive questions from other users of the site
+and/or anonymous people on the Internet. They can also follow each other on Retrospring to see new answers of their friends in
 the timeline and to ask their followers interesting questions.
 
 ## Installation
@@ -34,8 +40,8 @@ the Free Software Foundation, either version 3 of the License, or
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
-along with this program.  If not, see http://www.gnu.org/licenses/.
+along with this program. If not, see http://www.gnu.org/licenses/.

@@ -71,8 +71,10 @@ stages:
     - ssh "$VPS_USER@$HOST_URL" "cd $VPS_INSTALL_PATH && $BUNDLE_COMMAND"
 
     - ssh "$VPS_USER@$HOST_URL" "cd $VPS_INSTALL_PATH && RAILS_ENV=$ENVIRONMENT ./reload_foreman.sh"
-    - ssh "$VPS_USER@$HOST_URL" "chmod +x ~/retrospring/bin/rails"
+    - ssh "$VPS_USER@$HOST_URL" "chmod +x $VPS_INSTALL_PATH/bin/rails"
     - ssh "$VPS_USER@$HOST_URL" "systemctl restart $VPS_USER"
+
+    - ssh "$VPS_USER@$HOST_URL" "sudo /usr/sbin/service nginx stop && sudo /usr/sbin/service nginx start"
 
     # check inside vps
     - echo "Restarting service..."
