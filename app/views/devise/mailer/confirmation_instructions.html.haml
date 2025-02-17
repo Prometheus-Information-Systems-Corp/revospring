@@ -1,12 +1,7 @@
-%p{ style: 'margin:0px;padding:0px' }
-  Welcome to
-  = succeed ',' do
-    = APP_CONFIG['site_name']
-  = succeed '!' do
-    = @resource.screen_name
-%p &nbsp;
-%p{ style: 'margin:0px;padding:0px' } You can confirm your account email through the link below:
-%p{ style: 'margin:0px;padding:0px' }
-  = link_to 'Confirm my account', confirmation_url(@resource, confirmation_token: @token, protocol: (APP_CONFIG['https'] ? :https : :http))
-%p &nbsp;
-%p{ style: 'margin:0px;padding:0px' } Please do not reply to this email.
+%p{ style: 'margin:0px;padding:0px' } Hi #{@resource.screen_name},
+%p{ style: 'margin:0px;padding:0px' } Welcome to #{APP_CONFIG['site_name']}! We're excited to have you.
+%p{ style: 'margin:0px;padding:0px' } Click the button below to confirm your email:
+%p{ style: 'margin:0px;padding:10px' }
+  %a{ href: confirmation_url(@resource, confirmation_token: @token, protocol: (APP_CONFIG['https'] ? :https : :http)), style: 'background-color:#4CAF50;color:white;padding:10px 20px;text-decoration:none;border-radius:5px;display:inline-block;' } Confirm My Account
+%p{ style: 'margin:0px;padding:0px' } If you didn't sign up for #{APP_CONFIG['site_name']}, you can ignore this email.
+%p{ style: 'margin:0px;padding:0px' } Best,<br> The #{APP_CONFIG['site_name']} Team
