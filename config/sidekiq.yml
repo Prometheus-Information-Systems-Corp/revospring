@@ -1,10 +1,10 @@
 ---
-:concurrency: <%= ENV['CONCURRENT_THREADS'] %>
+:concurrency: 5
 :pidfile: ./tmp/pids/sidekiq.pid
 staging:
-  :concurrency: <%= ENV['CONCURRENT_THREADS'] %>
+  :concurrency: 10
 production:
-  :concurrency: <%= ENV['CONCURRENT_THREADS'] %>
+  :concurrency: 10
 :queues:
   - default
   - share
