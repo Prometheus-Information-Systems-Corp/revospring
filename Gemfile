@@ -93,10 +93,10 @@ group :development, :test do
   gem "rspec-its", "~> 2.0"
   gem "rspec-mocks"
   gem "rspec-rails", "~> 7.1"
-  gem "rspec-sidekiq", "~> 5.0", require: false
-  gem "rubocop", "~> 1.71"
-  gem "rubocop-rails", "~> 2.29"
-  gem "shoulda-matchers", "~> 6.4"
+  gem "rspec-sidekiq", "~> 5.1", require: false
+  gem "rubocop", "~> 1.78"
+  gem "rubocop-rails", "~> 2.32"
+  gem "shoulda-matchers", "~> 6.5"
   gem "simplecov", require: false
   gem "simplecov-cobertura", require: false
   gem "simplecov-json", require: false
@@ -110,7 +110,7 @@ gem "net-imap"
 gem "net-pop"
 gem "net-smtp"
 
-gem "pundit", "~> 2.4"
+gem "pundit", "~> 2.5"
 
 gem "rubyzip", "~> 2.4"
 

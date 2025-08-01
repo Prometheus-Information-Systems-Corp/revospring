@@ -3,9 +3,10 @@
 class SubscriptionsController < ApplicationController
   include TurboStreamable
 
-  before_action :authenticate_user!
-
   turbo_stream_actions :create, :destroy
+
+  before_action :authenticate_user!
+  before_action :not_readonly!
 
   def create
     answer = Answer.find(params[:answer])

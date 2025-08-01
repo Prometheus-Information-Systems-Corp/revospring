@@ -3,9 +3,10 @@
 class ReactionsController < ApplicationController
   include TurboStreamable
 
-  before_action :authenticate_user!, only: %w[create destroy]
-
   turbo_stream_actions :create, :destroy
+
+  before_action :authenticate_user!, only: %w[create destroy]
+  before_action :not_readonly!, except: %i[index]
 
   def index
     answer = Answer.includes([smiles: { user: :profile }]).find(params[:id])

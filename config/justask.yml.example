@@ -11,8 +11,11 @@ hostname: "justask.rrerr.net"
 https: true
 
 email_from: "noreply@justask.rrerr.net"
-# Required by WebPush spec in case of problems with notifications
-contact_email: "contact@justask.rrerr.net"
+
+# Used in two cases:
+# * Required by WebPush spec in case of problems with notifications
+# * Used as a contact email on the Privacy Policy page
+contact_email: "contact@example.com"
 
 # Name of the "Anonymous" user. (e.g. "Anonymous Coward", "Arno Nym", "Mr. X", ...)
 anonymous_name: "Anonymous"
@@ -61,6 +64,9 @@ features:
   # Advanced (marketing) frontpage layout
   advanced_frontpage:
     enabled: false
+  # readonly mode -- users can only delete
+  readonly:
+    enabled: false
 
 # Redis
 redis_url: "redis://localhost:6379"
@@ -105,3 +111,6 @@ sentry_dsn: ''
 #  sso: "CANNY_SSO_TOKEN_HERE"
 #  feature_board: "CANNY_FEATURE_BOARD_TOKEN"
 #  bug_board: "CANNY_BUGS_BOARD_TOKEN"
+
+# If you run a fork, please uncomment and adjust this url!
+# source_url: "https://github.com/retrospring/retrospring"

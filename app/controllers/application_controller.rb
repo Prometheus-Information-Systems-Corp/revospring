@@ -55,7 +55,7 @@ class ApplicationController < ActionController::Base
     @has_new_reports = if current_user.last_reports_visit.nil?
                          true
                        else
-                         Report.where(deleted: false)
+                         Report.where(resolved: false)
                                .where("created_at > ?", current_user.last_reports_visit)
                                .count.positive?
                        end
@@ -77,5 +77,30 @@ class ApplicationController < ActionController::Base
     else
       Sentry.set_user({ ip_address: request.remote_ip })
     end
+  end
+
+  # use this as a before_action to avoid anything happening when the site is in
+  # read-only mode
+  #
+  # useful only in: `AjaxController`s, or `TurboStreamable`s as the exception
+  # is rescued there
+  def not_readonly!
+    return unless Retrospring::Config.readonly?
+
+    raise Errors::ReadOnlyMode
+  end
+
+  # use this as a before_action to avoid anything happening when the site is in
+  # read-only mode
+  #
+  # useful anywhere else `not_readonly!` can't be used.  it sets the error
+  # flash appropriately and renders the view given in `view_name`
+  def not_readonly_flash!(view_name)
+    return unless Retrospring::Config.readonly?
+
+    flash.now[:error] = t("errors.read_only_mode")
+    render view_name
+
+    false
   end
 end

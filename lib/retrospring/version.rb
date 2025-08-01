@@ -13,17 +13,19 @@ module Retrospring
   module Version
     module_function
 
-    def year = 2024
+    def year = 2025
 
-    def month = 10
+    def month = 2
 
-    def day = 1
+    def day = 28
 
     def patch = 0
 
     def suffix = ""
 
     def minor = [month.to_s.rjust(2, "0"), day.to_s.rjust(2, "0")].join
+
+    def source_url = APP_CONFIG[:source_url] || "https://github.com/retrospring/retrospring"
 
     def to_a = [year.to_s, minor, patch.to_s]
 

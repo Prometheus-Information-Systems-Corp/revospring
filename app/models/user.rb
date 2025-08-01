@@ -24,7 +24,8 @@ class User < ApplicationRecord
          :validatable, :confirmable, authentication_keys: [:login]
 
   has_one_time_password
-  enum otp_module: { disabled: 0, enabled: 1 }, _prefix: true
+  attribute :otp_module, :integer
+  enum otp_module: { disabled: 0, enabled: 1 }, _prefix: true, _default: 0
   attr_accessor :otp_attempt, :otp_validation
   attr_writer :login
 
@@ -72,7 +73,8 @@ class User < ApplicationRecord
             format:      { with: SCREEN_NAME_REGEX, message: I18n.t("activerecord.validation.user.screen_name.format") },
             length:      { minimum: 1, maximum: 16 },
             uniqueness:  { case_sensitive: false },
-            screen_name: true
+            screen_name: true,
+            read_only:   true
 
   mount_uploader :profile_picture, ProfilePictureUploader, mount_on: :profile_picture_file_name
   process_in_background :profile_picture
@@ -83,7 +85,7 @@ class User < ApplicationRecord
   before_destroy do
     Report.where(target_id: id, type: "Reports::User").find_each do |r|
       unless r.nil?
-        r.deleted = true
+        r.resolved = true
         r.save
       end
     end
@@ -146,23 +148,6 @@ class User < ApplicationRecord
   def mod? = has_cached_role?(:moderator) || has_cached_role?(:administrator)
 
   def admin? = has_cached_role?(:administrator)
-
-  # region stuff used for reporting/moderation
-  def report(object, reason = nil)
-    target_user = if object.instance_of?(::User)
-                    object
-                  elsif object.respond_to? :user
-                    object.user
-                  end
-
-    existing = Report.find_by(type: "Reports::#{object.class}", target_id: object.id, user_id: id, target_user_id: target_user&.id, deleted: false)
-    if existing.nil?
-      Report.create(type: "Reports::#{object.class}", target_id: object.id, user_id: id, target_user_id: target_user&.id, reason:)
-    elsif !reason.nil? && reason.length.positive?
-      existing.append_reason(reason)
-    end
-  end
-  # endregion
 
   def can_export?
     return (Time.zone.now > export_created_at.in(1.week)) && !export_processing unless export_created_at.nil?
