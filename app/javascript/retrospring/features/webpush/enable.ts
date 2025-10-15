@@ -26,7 +26,7 @@ export async function enableHandler (event: Event): Promise<void> {
     const data = await response.json;
 
     if (data.success) {
-      new Notification(I18n.translate("frontend.push_notifications.subscribe.success.title"), {
+      registration.showNotification(I18n.translate("frontend.push_notifications.subscribe.success.title"), {
         body: I18n.translate("frontend.push_notifications.subscribe.success.body")
       });
 
@@ -42,9 +42,10 @@ export async function enableHandler (event: Event): Promise<void> {
         subscriptionCountElement.textContent = data.message;
       }
     } else {
-      new Notification(I18n.translate("frontend.push_notifications.fail.title"), {
+      registration.showNotification(I18n.translate("frontend.push_notifications.fail.title"), {
         body: I18n.translate("frontend.push_notifications.fail.body")
       });
+
     }
   } catch (error) {
     console.error("Failed to set up push notifications", error);
@@ -59,11 +60,7 @@ async function getServiceWorker(): Promise<ServiceWorkerRegistration> {
 async function getServerKey(): Promise<Buffer> {
   const response = await get("/ajax/webpush/key");
   const data = await response.json;
-  const b64 = data.key.replace(/-/g, '+').replace(/_/g, '/');
-  const raw = atob(b64);
-  const out = new Uint8Array(raw.length);
-  for (let i = 0; i < raw.length; i++) out[i] = raw.charCodeAt(i);
-  return out;
+  return Buffer.from(data.key, 'base64');
 }
 
 async function subscribe(registration: ServiceWorkerRegistration): Promise<PushSubscription> {
