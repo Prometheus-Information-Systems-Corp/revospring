@@ -59,7 +59,11 @@ async function getServiceWorker(): Promise<ServiceWorkerRegistration> {
 async function getServerKey(): Promise<Buffer> {
   const response = await get("/ajax/webpush/key");
   const data = await response.json;
-  return Buffer.from(data.key, 'base64');
+  const b64 = data.key.replace(/-/g, '+').replace(/_/g, '/');
+  const raw = atob(b64);
+  const out = new Uint8Array(raw.length);
+  for (let i = 0; i < raw.length; i++) out[i] = raw.charCodeAt(i);
+  return out;
 }
 
 async function subscribe(registration: ServiceWorkerRegistration): Promise<PushSubscription> {
