@@ -15,7 +15,6 @@ stages:
     # Set environment variables based on branch
     - if [ "$CI_COMMIT_BRANCH" = "dev-revospring" ]; then
         export HOST_PRIVATE_KEY_B64="$DEV_HOST_PRIVATE_KEY_B64";
-        export HOST_SSH_PASSPHRASE="$DEV_HOST_SSH_PASSPHRASE";
         export VPS_USER="$DEV_VPS_USER";
         export HOST_URL="$DEV_HOST_URL";
         export VPS_INSTALL_PATH="$DEV_VPS_INSTALL_PATH";
@@ -23,7 +22,6 @@ stages:
         export ENVIRONMENT="development";
       elif [ "$CI_COMMIT_BRANCH" = "revospring" ]; then
         export HOST_PRIVATE_KEY_B64="$PROD_HOST_PRIVATE_KEY_B64";
-        export HOST_SSH_PASSPHRASE="$PROD_HOST_SSH_PASSPHRASE";
         export VPS_USER="$PROD_VPS_USER";
         export HOST_URL="$PROD_HOST_URL";
         export VPS_INSTALL_PATH="$PROD_VPS_INSTALL_PATH";
@@ -40,15 +38,15 @@ stages:
     - echo "Install Path:$VPS_INSTALL_PATH"
 
     # Decode SSH key
-    - echo "$HOST_PRIVATE_KEY_B64" | base64 -d > ~/.ssh/id_rsa
-    - chmod 600 ~/.ssh/id_rsa
+    - echo "$HOST_PRIVATE_KEY_B64" | base64 -d > ~/.ssh/id_ed25519
+    - chmod 600 ~/.ssh/id_ed25519
 
     # Add VPS to known_hosts
     - ssh-keyscan -H "$HOST_URL" >> ~/.ssh/known_hosts
 
     # Start SSH agent and add key
     - eval $(ssh-agent -s)
-    - echo "$HOST_SSH_PASSPHRASE" | ssh-add ~/.ssh/id_rsa
+    - ssh-add ~/.ssh/id_ed25519
 
     # Test SSH connection
     - echo "Testing SSH connection..."
@@ -123,12 +121,10 @@ test_ssh:
     # Set environment-specific variables
     - if [ "$CI_COMMIT_BRANCH" = "dev-revospring" ]; then
         export HOST_PRIVATE_KEY_B64="$DEV_HOST_PRIVATE_KEY_B64";
-        export HOST_SSH_PASSPHRASE="$DEV_HOST_SSH_PASSPHRASE";
         export VPS_USER="$DEV_VPS_USER";
         export HOST_URL="$DEV_HOST_URL";
       elif [ "$CI_COMMIT_BRANCH" = "revospring" ]; then
         export HOST_PRIVATE_KEY_B64="$PROD_HOST_PRIVATE_KEY_B64";
-        export HOST_SSH_PASSPHRASE="$PROD_HOST_SSH_PASSPHRASE";
         export VPS_USER="$PROD_VPS_USER";
         export HOST_URL="$PROD_HOST_URL";
       else
@@ -137,15 +133,15 @@ test_ssh:
       fi
 
     # Decode the private key
-    - echo "$HOST_PRIVATE_KEY_B64" | base64 -d > ~/.ssh/id_rsa
-    - chmod 600 ~/.ssh/id_rsa
+    - echo "$HOST_PRIVATE_KEY_B64" | base64 -d > ~/.ssh/id_ed25519
+    - chmod 600 ~/.ssh/id_ed25519
 
     # Add the VPS host to known_hosts
     - ssh-keyscan -H "$HOST_URL" >> ~/.ssh/known_hosts
 
     # Start ssh-agent and add the private key
     - eval $(ssh-agent -s)
-    - echo "$HOST_SSH_PASSPHRASE" | ssh-add ~/.ssh/id_rsa
+    - ssh-add ~/.ssh/id_ed25519
 
   script:
     - echo "Testing SSH connection..."
