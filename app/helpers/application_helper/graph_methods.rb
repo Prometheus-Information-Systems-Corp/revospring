@@ -48,7 +48,7 @@ module ApplicationHelper::GraphMethods
   # @param answer [Answer]
   def answer_twitter_card(answer)
     meta_tags({
-      "twitter:card":        "summary_large_image",
+      "twitter:card":        "summary",
       "twitter:site":        "@retrospring",
       "twitter:title":       "#{answer.user.profile.safe_name} answered:",
       "twitter:description": answer.question.content.to_s.truncate(200),
