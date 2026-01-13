@@ -75,3 +75,17 @@ desktop.ini
 
 # VS Code
 .vscode/
+
+/config/master.key
+
+# Prometheus
+Procfile
+vendor/
+Procfile.dev
+config/secrets.yml
+config/master.key
+config/credentials.yml.enc
+development.env
+bin/rails
+production.env
+/public/uploads/

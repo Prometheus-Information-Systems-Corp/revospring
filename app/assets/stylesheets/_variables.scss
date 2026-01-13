@@ -5,9 +5,11 @@ $lexend-font-path: ".";
 $lexend-weights: 500, 600;
 $fa-font-path: ".";
 
-$font-family-sans-serif: "Lexend", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+$font-family-sans-serif: "Lexend", "Open Sans", "Helvetica Neue", Helvetica,
+  Arial, sans-serif;
 $font-family-serif: Georgia, "DejaVu Serif", "Times New Roman", Times, serif;
-$font-family-monospace: "PragmataPro", Monaco, "Ubuntu Mono", Menlo, "DejaVu Sans Mono", monospace;
+$font-family-monospace: "PragmataPro", Monaco, "Ubuntu Mono", Menlo,
+  "DejaVu Sans Mono", monospace;
 $font-family-base: $font-family-sans-serif;
 
 $font-size-base: 1rem;
@@ -22,16 +24,16 @@ $font-size-h5: $font-size-base;
 $font-size-h6: ceil(($font-size-base * 0.85)); // ~12px
 
 // Bootstrap CSS variable prefix
-$prefix: '';
+$prefix: "";
 
 // Usual navbar height
 $navbar-height: 56px;
 
 // Color overrides for Bootstrap
-$primary: #5e35b1;
+$primary: #ff4f00;
 
 $rs-theme-colors: (
-  primary: $primary
+  primary: $primary,
 );
 
 $theme-colors: map-merge($theme-colors, $rs-theme-colors);
@@ -73,7 +75,9 @@ $avatar-sizes: (
 );
 
 $rs-spacers: (
-  10: (1rem * 6)
+  10: (
+    1rem * 6,
+  ),
 );
 
 $spacers: map-merge($rs-spacers, $spacers);
@@ -90,9 +94,12 @@ $spacers: map-merge($rs-spacers, $spacers);
    for background opacity styles
    */
 
-  --primary-rgb: #{color.red($primary)}, #{color.green($primary)}, #{color.blue($primary)};
-  --raised-bg-rgb: #{color.red(#ffffff)}, #{color.green(#ffffff)}, #{color.blue(#ffffff)};
-  --raised-accent-rgb: #{color.red(#f7f7f7)}, #{color.green(#f7f7f7)}, #{color.blue(#f7f7f7)};
+  --primary-rgb: #{color.red($primary)}, #{color.green($primary)},
+    #{color.blue($primary)};
+  --raised-bg-rgb: #{color.red(#ffffff)}, #{color.green(#ffffff)},
+    #{color.blue(#ffffff)};
+  --raised-accent-rgb: #{color.red(#f7f7f7)}, #{color.green(#f7f7f7)},
+    #{color.blue(#f7f7f7)};
 
   /**
    NOTE for all *-text variables

@@ -1,0 +1,183 @@
+stages:
+  - mirror
+  - test-ssh 
+  - deploy
+
+.deploy_template:
+  image: alpine:latest
+  stage: deploy
+  except:
+    - schedules
+  before_script:
+    - apk update && apk add --no-cache openssh git sshpass curl
+    - mkdir -p ~/.ssh
+
+    # Set environment variables based on branch
+    - if [ "$CI_COMMIT_BRANCH" = "dev-revospring" ]; then
+        export HOST_PRIVATE_KEY_B64="$DEV_HOST_PRIVATE_KEY_B64";
+        export VPS_USER="$DEV_VPS_USER";
+        export HOST_URL="$DEV_HOST_URL";
+        export VPS_INSTALL_PATH="$DEV_VPS_INSTALL_PATH";
+        export BUNDLE_COMMAND="~/.rbenv/shims/bundle install";
+        export ENVIRONMENT="development";
+      elif [ "$CI_COMMIT_BRANCH" = "revospring" ]; then
+        export HOST_PRIVATE_KEY_B64="$PROD_HOST_PRIVATE_KEY_B64";
+        export VPS_USER="$PROD_VPS_USER";
+        export HOST_URL="$PROD_HOST_URL";
+        export VPS_INSTALL_PATH="$PROD_VPS_INSTALL_PATH";
+        export BUNDLE_COMMAND="~/.rbenv/shims/bundle install --deployment --without development test mysql";
+        export ENVIRONMENT="production";
+      else
+        echo "Unknown environment. Skipping deployment.";
+        exit 1;
+      fi
+
+    # Print debugging info
+    - echo "User:$VPS_USER"
+    - echo "Host:$HOST_URL"
+    - echo "Install Path:$VPS_INSTALL_PATH"
+
+    # Decode SSH key
+    - echo "$HOST_PRIVATE_KEY_B64" | base64 -d > ~/.ssh/id_ed25519
+    - chmod 600 ~/.ssh/id_ed25519
+
+    # Add VPS to known_hosts
+    - ssh-keyscan -H "$HOST_URL" >> ~/.ssh/known_hosts
+
+    # Start SSH agent and add key
+    - eval $(ssh-agent -s)
+    - ssh-add ~/.ssh/id_ed25519
+
+    # Test SSH connection
+    - echo "Testing SSH connection..."
+    - ssh "$VPS_USER@$HOST_URL" "echo 'SSH connection successful'"
+
+  script:
+  
+    # deploy  
+    # Ensure the correct remote repository
+    - ssh "$VPS_USER@$HOST_URL" "cd $VPS_INSTALL_PATH && git remote remove origin && git remote add origin 'https://${GIT_USER}:${GIT_PAT}@${DESTINATION_REPOSITORY}'"
+
+    #  Fetch latest changes
+    - ssh "$VPS_USER@$HOST_URL" "cd $VPS_INSTALL_PATH && git fetch origin"
+
+    # Discard all local changes and match remote branch
+    - ssh "$VPS_USER@$HOST_URL" "cd $VPS_INSTALL_PATH && git reset --hard origin/$CI_COMMIT_BRANCH"
+
+
+    - echo "🚀 Installing gems..."
+    - ssh "$VPS_USER@$HOST_URL" "cd $VPS_INSTALL_PATH && $BUNDLE_COMMAND"
+
+    - ssh "$VPS_USER@$HOST_URL" "cd $VPS_INSTALL_PATH && RAILS_ENV=$ENVIRONMENT ./reload_foreman.sh"
+    - ssh "$VPS_USER@$HOST_URL" "chmod +x $VPS_INSTALL_PATH/bin/rails"
+    - ssh "$VPS_USER@$HOST_URL" "systemctl restart $VPS_USER"
+
+    - ssh "$VPS_USER@$HOST_URL" "sudo /usr/sbin/service nginx stop && sudo /usr/sbin/service nginx start"
+
+    # check inside vps
+    - echo "Restarting service..."
+    - sleep 15
+    - ssh "$VPS_USER@$HOST_URL" "systemctl status $VPS_USER"
+    - sleep 15
+    - ssh "$VPS_USER@$HOST_URL" "systemctl status $VPS_USER"
+
+    # check from the outside
+    - sleep 100
+    - ssh "$VPS_USER@$HOST_URL" "systemctl status $VPS_USER"
+    - HTTP_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" $HOST_URL)
+    - echo "Response Code:$HTTP_RESPONSE"
+    - if [ "$HTTP_RESPONSE" -ge 200 ] && [ "$HTTP_RESPONSE" -lt 400 ]; then echo "✅ $HOST_URL is UP!"; exit 0; else echo "❌ $HOST_URL is DOWN!"; exit 1; fi
+
+    
+
+  environment:
+    name: $CI_COMMIT_BRANCH
+
+
+deploy_dev:
+  extends: .deploy_template
+  only:
+    - dev-revospring
+
+deploy_prod:
+  extends: .deploy_template
+  only:
+    - revospring
+
+
+
+
+
+
+
+
+
+test_ssh:
+  stage: test-ssh
+  before_script:
+    - apk update && apk add --no-cache openssh sshpass
+    - mkdir -p ~/.ssh
+
+    # Set environment-specific variables
+    - if [ "$CI_COMMIT_BRANCH" = "dev-revospring" ]; then
+        export HOST_PRIVATE_KEY_B64="$DEV_HOST_PRIVATE_KEY_B64";
+        export VPS_USER="$DEV_VPS_USER";
+        export HOST_URL="$DEV_HOST_URL";
+      elif [ "$CI_COMMIT_BRANCH" = "revospring" ]; then
+        export HOST_PRIVATE_KEY_B64="$PROD_HOST_PRIVATE_KEY_B64";
+        export VPS_USER="$PROD_VPS_USER";
+        export HOST_URL="$PROD_HOST_URL";
+      else
+        echo "Unknown environment. Skipping test.";
+        exit 1;
+      fi
+
+    # Decode the private key
+    - echo "$HOST_PRIVATE_KEY_B64" | base64 -d > ~/.ssh/id_ed25519
+    - chmod 600 ~/.ssh/id_ed25519
+
+    # Add the VPS host to known_hosts
+    - ssh-keyscan -H "$HOST_URL" >> ~/.ssh/known_hosts
+
+    # Start ssh-agent and add the private key
+    - eval $(ssh-agent -s)
+    - ssh-add ~/.ssh/id_ed25519
+
+  script:
+    - echo "Testing SSH connection..."
+    - echo "$VPS_USER@$HOST_URL"
+    - ssh -o StrictHostKeyChecking=no "$VPS_USER@$HOST_URL" "echo 'SSH connection successful'"
+
+  only: 
+    - neverrunthis 
+
+
+mirror-repository:
+  stage: mirror
+  image: alpine:latest
+  before_script:
+    - apk add --no-cache git
+
+    # Configure Git with HTTPS credentials
+    - git config --global user.name "${GIT_USER_NAME}"
+    - git config --global user.email "${GIT_USER_EMAIL}"
+
+    # Construct authenticated destination repository URL at runtime
+    - export AUTHENTICATED_DESTINATION_REPO="https://${GIT_USER}:${GIT_PAT}@${DESTINATION_REPOSITORY}"
+    
+  script:
+    - echo "Cloning repository from source..."
+    - git clone --mirror "$SOURCE_REPOSITORY" repo_mirror
+    - cd repo_mirror
+    - echo "Updating remote origin..."
+    - git remote remove origin
+    - git remote add origin "$AUTHENTICATED_DESTINATION_REPO"
+
+    # Print the constructed repo URL (masking the PAT for security)
+    - echo "AUTHENTICATED_DESTINATION_REPO (masked):https://${GIT_USER}:*****@${DESTINATION_REPOSITORY}"
+
+    - echo "Pushing updates to GitLab..."
+    - git push --tags --force
+    
+  only:
+    - schedules
