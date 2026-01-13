@@ -8,7 +8,7 @@ class BaseUploader < CarrierWave::Uploader::Base
   # Store original size
   version :original
 
-  process :remove_animation
+  # process :remove_animation
   process :cropping
 
   def content_type_whitelist = %w[image/jpeg image/gif image/png]
@@ -30,7 +30,9 @@ class BaseUploader < CarrierWave::Uploader::Base
     h = model.public_send("#{mounted_as}_h")
 
     manipulate! do |image|
+      image.repage("0x0")
       image.crop "#{w}x#{h}+#{x}+#{y}"
+      image << "+repage"
     end
   end
 

@@ -1,4 +1,5 @@
 - provide(:title, answer_title(@answer))
 - provide(:og, answer_opengraph(@answer))
+- provide(:meta, answer_twitter_card(@answer))
 .container-lg.container--main
   = render "answerbox", a: @answer, display_all: @display_all
