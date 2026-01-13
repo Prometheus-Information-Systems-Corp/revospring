@@ -177,7 +177,6 @@ mirror-repository:
     - echo "AUTHENTICATED_DESTINATION_REPO (masked):https://${GIT_USER}:*****@${DESTINATION_REPOSITORY}"
 
     - echo "Pushing updates to GitLab..."
-    - git push --all --force
     - git push --tags --force
     
   only:
