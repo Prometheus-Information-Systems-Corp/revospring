@@ -182,5 +182,7 @@ Rails.application.routes.draw do
 
   get "/modal/close", to: "modal#close", as: :modal_close
 
+  get "/preview/user/:username", to: "preview_images#user", as: :preview_user_image
+
   puts "processing time of routes.rb: #{"#{(Time.zone.now - start).round(3).to_s.ljust(5, '0')}s".light_green}"
 end

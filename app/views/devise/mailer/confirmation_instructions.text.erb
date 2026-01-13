@@ -1,8 +1,12 @@
-Welcome to <%= APP_CONFIG['site_name'] %>, <%= @resource.screen_name %>!
+Hi <%= @resource.screen_name %>,
 
-You can confirm your account email by copying link below,
-and entering it into your browser.
+Welcome to <%= APP_CONFIG['site_name'] %>! We're excited to have you.
+
+To get started, please confirm your email by clicking the link below:
 
 <%= confirmation_url(@resource, confirmation_token: @token, protocol: (APP_CONFIG['https'] ? :https : :http)) %>
 
-Please do not reply to this email.
+If you didn’t sign up for <%= APP_CONFIG['site_name'] %>, you can ignore this email.
+
+Best,
+The <%= APP_CONFIG['site_name'] %> Team
