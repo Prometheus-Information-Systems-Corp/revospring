@@ -13,11 +13,11 @@ module Retrospring
   module Version
     module_function
 
-    def year = 2025
+    def year = 2026
 
-    def month = 8
+    def month = 1
 
-    def day = 31
+    def day = 14
 
     def patch = 0
 
@@ -25,7 +25,7 @@ module Retrospring
 
     def minor = [month.to_s.rjust(2, "0"), day.to_s.rjust(2, "0")].join
 
-    def source_url = APP_CONFIG[:source_url] || "https://github.com/retrospring/retrospring"
+    def source_url = APP_CONFIG[:source_url] || "https://git.prometheus.systems/pisc/revospring"
 
     def to_a = [year.to_s, minor, patch.to_s]
 
