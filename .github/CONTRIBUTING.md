@@ -9,7 +9,7 @@ Before reporting a new issue, please check our GitLab issues to see if it
 already exists. If it does, please add any additional details you have or give
 it a 👍 reaction.
 
-If you don’t see an existing issue, please email us at support@revospring.org.
+If you don’t see an existing issue, please email us at support@revospring.net.
 You can send bug reports, feature requests, questions, or anything else you
 think we should see. We’ll review it and create or update a GitLab issue as we
 see fit.

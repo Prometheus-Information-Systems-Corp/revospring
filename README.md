@@ -19,8 +19,6 @@ Our guidelines and general information about how you can help us improving Revos
 
 ## Licence
 
-Copyright (C) 2014-2025 The Retrospring team and contributors
-
 This project is continued and maintained by Prometheus Information Systems Corp as Revospring.
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
