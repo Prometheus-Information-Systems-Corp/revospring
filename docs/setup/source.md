@@ -147,7 +147,7 @@ git clone https://git.prometheus.systems/pisc/revospring.git && mv revospring re
 Visit [the latest releases page](https://git.prometheus.systems/pisc/revospring/-/releases) and check it out (ex. `2025.0114.0`)
 
 ```shell
-git checkout 2025.0114.0
+git checkout 2026.0114.0
 ```
 
 #### Installing dependencies
