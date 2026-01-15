@@ -4,44 +4,27 @@ Revospring is a fork of Retrospring. When it was announced that Retrospring woul
 
 To learn more about Prometheus and our mission to help make the internet a freer place, visit us at: [prometheus.systems](https://prometheus.systems/)
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./.github/assets/logo-white.png">
-  <source media="(prefers-color-scheme: light)" srcset="./.github/assets/logo.png">
-  <img alt="The Retrospring logo" src="./composition/png/logo.png">
-</picture>
 
-![Retrospring](https://github.com/Retrospring/retrospring/workflows/Retrospring/badge.svg)
-
-Retrospring is a **free, open-source social network** following the Q/A (question and answer) principle of sites like
-Formspring, ask.fm or CuriousCat. Users can create accounts on Retrospring to receive questions from other users of the site
-and/or anonymous people on the Internet. They can also follow each other on Retrospring to see new answers of their friends in
-the timeline and to ask their followers interesting questions.
+Revospring is a **free, open-source social network** following the Q/A (question and answer) principle of sites like Formspring, ask.fm or CuriousCat. Users can create accounts on Revospring to receive questions from other users of the site and/or anonymous people on the Internet. They can also follow each other on Revospring to see new answers of their friends in the timeline and to ask their followers interesting questions.
 
 ## Installation
 
-You can find all the installation instructions needed for a local/production
-setup of Retrospring in the [documentation](/docs/setup/source.md).
+You can find all the installation instructions needed for a local/production setup of Revospring in the [documentation](/docs/setup/source.md).
 
 ## Contributing
 
-Retrospring is **free, open-source software** licensed under **AGPLv3**.
+Revospring is **free, open-source software** licensed under **AGPLv3**.
 
-Our guidelines and general information about how you can help us
-improving Retrospring can be found in the [CONTRIBUTING.md](/.github/CONTRIBUTING.md) file.
+Our guidelines and general information about how you can help us improving Revospring can be found in the [CONTRIBUTING.md](/.github/CONTRIBUTING.md) file.
 
 ## Licence
 
-Copyright (C) 2014-2024 The Retrospring team and contributors
+Copyright (C) 2014-2025 The Retrospring team and contributors
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+This project is continued and maintained by Prometheus Information Systems Corp as Revospring.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU Affero General Public License for more details.
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-You should have received a copy of the GNU Affero General Public License
-along with this program. If not, see http://www.gnu.org/licenses/.
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License along with this program. If not, see http://www.gnu.org/licenses/.
