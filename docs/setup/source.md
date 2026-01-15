@@ -141,13 +141,13 @@ su - retrospring
 Use git to download the latest stable release of Retrospring:
 
 ```shell
-git clone https://github.com/Retrospring/retrospring.git && cd retrospring
+git clone https://git.prometheus.systems/pisc/revospring.git && mv revospring retrospring && cd retrospring
 ```
 
-Visit [the latest releases page](https://github.com/retrospring/retrospring/releases/latest) and check it out (ex. `2024.0811.1`)
+Visit [the latest releases page](https://git.prometheus.systems/pisc/revospring/-/releases) and check it out (ex. `2025.0114.0`)
 
 ```shell
-git checkout 2024.0811.01
+git checkout 2025.0114.0
 ```
 
 #### Installing dependencies
